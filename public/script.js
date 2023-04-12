@@ -1,7 +1,7 @@
 const [$messages, $msgform, $msginput] = ["messages", "form", "input"].map(
   (id) => document.getElementById(id)
 );
-const socket = new WebSocket("ws://localhost:3000/livechat");
+const socket = new WebSocket(`wss://${window.location.host}/livechat`);
 
 socket.onopen = () => {
   $msgform.addEventListener("submit", (e) => {
