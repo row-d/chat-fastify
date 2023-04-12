@@ -26,7 +26,11 @@ server.register(async function (sv) {
   sv.get("/livechat", { websocket: true }, (connection, req) => {
     connection.socket.on("message", async (rawdata) => {
       const msg = rawdata.toString();
-      connection.socket.send(msg);
+      sv.websocketServer.clients.forEach(client=> {
+          if (client.readyState === 1) {
+            client.send(msg)
+          }
+      })
       await fs.appendFile(folders.database + "/chat.txt", msg + "\n");
     });
   });
