@@ -12,19 +12,25 @@ const folders = {
   database: path.resolve(__dirname, "../database"),
 };
 
-server.register(websocket);
+server.register(websocket, {
+  options: {
+    maxPayload: 1048576,
+    clientTracking: true,
+  },
+});
 server.register(static, {
   root: folders.public,
 });
 
 server.register(async function (sv) {
-  sv.get('/livechat', { websocket: true }, (connection /* SocketStream */, req /* FastifyRequest */) => {
-    connection.socket.on('message', message => {
-      // message.toString() === 'hi from client'
-      connection.socket.send('hi from server')
-    })
-  })
-})
+  sv.get("/livechat", { websocket: true }, (connection, req) => {
+    connection.socket.on("message", async (rawdata) => {
+      const msg = rawdata.toString();
+      connection.socket.send(msg);
+      await fs.appendFile(folders.database + "/chat.txt", msg + "\n");
+    });
+  });
+});
 
 server.get("/chat", (req, reply) => {
   reply.sendFile("chat.txt", folders.database);
