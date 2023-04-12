@@ -26,44 +26,6 @@
 		<input id="input"></input>
 		<input type="submit"></input>
 	</form>
-	
-	<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
-	<script>
-		  const socket = io();
-		  const form = document.getElementById('form');
-		  const input = document.getElementById('input');
-			const messages = document.getElementById('messages')
-			const getChat = () => fetch("/chat").then(d=>d.text())
-
-			window.addEventListener("load",async () =>{
-				const payload = await getChat()
-				const chat = payload
-											.split("\n")
-											.filter(m=> m !== "")
-											.forEach(m=>{
-												const li = document.createElement("li")
-												li.textContent = m
-												messages.appendChild(li)
-											})
-			})
-
-			form.addEventListener('submit', function(e) {
-				e.preventDefault();
-				if (input.value) {
-					socket.emit('chat message', input.value);
-					input.value = '';
-				}
-			});
-
-
-
-		 socket.on("chat message",(msg)=>{
-		 	const i = document.createElement("li")
-		 	i.textContent = msg
-
-		 	messages.appendChild(i)
-		 	window.scrollTo(0, document.body.scrollHeight);
-		 })
-	</script>
+	<script src="/script.js"></script>
 	</body>
 </html>
